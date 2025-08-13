@@ -609,3 +609,51 @@ class DocentePublicoDetailView(RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         """Obtener detalles públicos del docente"""
         return super().get(request, *args, **kwargs)
+
+
+class VerificarEmailExistenteView(APIView):
+    """
+    Vista para verificar si un email ya está registrado
+    """
+    permission_classes = [permissions.AllowAny]
+
+    @extend_schema(
+        summary="Verificar si email existe",
+        description="Verifica si un email ya está registrado en el sistema",
+        tags=['Utilidades'],
+        parameters=[
+            OpenApiParameter(
+                name='email',
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                description='Email a verificar'
+            )
+        ],
+        responses={
+            200: {
+                'type': 'object',
+                'properties': {
+                    'existe': {'type': 'boolean'},
+                    'email': {'type': 'string'},
+                    'message': {'type': 'string'}
+                }
+            }
+        }
+    )
+    def get(self, request):
+        """Verificar si un email ya está registrado"""
+        email = request.query_params.get('email', '').strip().lower()
+        
+        if not email:
+            return Response({
+                'error': 'Parámetro email es requerido'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Verificar si el email existe
+        existe = Usuario.objects.filter(email=email).exists()
+        
+        return Response({
+            'existe': existe,
+            'email': email,
+            'message': 'Email encontrado' if existe else 'Email disponible'
+        })

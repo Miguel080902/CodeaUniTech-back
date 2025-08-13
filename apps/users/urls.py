@@ -12,7 +12,10 @@ from .views import (
     DocenteCreateView, DocenteListView, DocenteDetailView,
     
     # Vistas públicas de docentes
-    DocentesPublicosView, DocentePublicoDetailView
+    DocentesPublicosView, DocentePublicoDetailView,
+    
+    # Utilidades
+    VerificarEmailExistenteView
 )
 
 app_name = 'users'
@@ -40,6 +43,9 @@ urlpatterns = [
     
     # Verificar disponibilidad de usuario único
     path('verificar-usuario/', VerificarUsuarioUnicoView.as_view(), name='verificar_usuario_unico'),
+    
+    # Verificar si email existe
+    path('verificar-email/', VerificarEmailExistenteView.as_view(), name='verificar_email_existente'),
 
     # ===============================
     # ADMINISTRACIÓN DE DOCENTES (Solo admins)
@@ -80,7 +86,8 @@ ESTRUCTURA DE URLs - API DE USUARIOS
 ├── GET,PUT,PATCH /perfil/              - Ver/actualizar perfil propio
 ├── GET,PUT,PATCH /completar-perfil/    - Completar perfil (paso 2)
 ├── GET /estado-perfil/                 - Verificar estado del perfil
-└── GET /verificar-usuario/             - Verificar disponibilidad de usuario único
+├── GET /verificar-usuario/             - Verificar disponibilidad de usuario único
+└── GET /verificar-email/               - Verificar si email ya existe
 
 📁 ADMINISTRACIÓN DE DOCENTES (/users/admin/docentes/)
 ├── POST /crear/             - Crear nuevo docente (admin)
@@ -93,6 +100,7 @@ ESTRUCTURA DE URLs - API DE USUARIOS
 
 📋 PARÁMETROS DE QUERY DISPONIBLES:
 - /verificar-usuario/?usuario_unico=nombre_usuario
+- /verificar-email/?email=usuario@email.com
 """
 
 # ===============================
@@ -112,6 +120,7 @@ EJEMPLOS DE ENDPOINTS:
 - PUT /users/completar-perfil/
 - GET /users/estado-perfil/
 - GET /users/verificar-usuario/?usuario_unico=juan.perez
+- GET /users/verificar-email/?email=usuario@gmail.com
 
 🛡️ ADMIN - DOCENTES:
 - POST /users/admin/docentes/crear/
